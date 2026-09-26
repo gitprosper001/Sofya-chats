@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseLink — Chat with admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-nav">
+      <div class="brand"><div class="logo">P</div> PulseLink</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="meta" id="who"></span>
+        <a class="btn ghost" href="/">Leave</a>
+      </div>
+    </header>
+    <div class="app-body" style="grid-template-columns:1fr">
+      <section class="chat">
+        <div class="chat-head">
+          <strong>Admin inbox</strong>
+          <div class="meta">Send a message, photo or video. Broadcasts from admin appear here too.</div>
+        </div>
+        <div class="feed" id="feed"></div>
+        <div class="preview-row" id="preview"></div>
+        <form class="composer" id="form">
+          <label class="btn file-btn">Attach<input type="file" id="file" accept="image/*,video/*"></label>
+          <textarea id="text" placeholder="Message the admin…"></textarea>
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </section>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+  <script>
+    bootUser();
+  </script>
+</body>
+</html>

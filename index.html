@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseLink — Talk to admin. Share text, photos & video.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand"><div class="logo">P</div> PulseLink</div>
+      <div class="nav-actions">
+        <button class="btn ghost" onclick="openModal('admin')">Admin</button>
+        <button class="btn primary" onclick="openModal('user')">Start chatting</button>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="kicker">Live admin desk</div>
+        <h1>Send text, photos and videos. Users can message the admin.</h1>
+        <p class="lead">PulseLink is a private line between you and your audience. Broadcast updates with media, then reply to every incoming chat in real time.</p>
+        <div class="cta-row">
+          <button class="btn primary" onclick="openModal('user')">Chat as a user</button>
+          <button class="btn" onclick="openModal('admin')">Open admin desk</button>
+        </div>
+      </div>
+      <div class="panel preview-card">
+        <div class="bubble"><small>Maya</small>Hi — can I send a short clip of the issue?</div>
+        <div class="bubble admin"><small>Admin</small>Yes. Drop the video here and I’ll review it.</div>
+        <div class="bubble"><small>Broadcast</small>New drop tonight. Poster + teaser attached.</div>
+      </div>
+    </section>
+
+    <section class="features">
+      <article class="feat"><h3>Text</h3><p>Live two-way chat between users and the admin inbox.</p></article>
+      <article class="feat"><h3>Images</h3><p>Upload photos from either side. They appear inline in the thread.</p></article>
+      <article class="feat"><h3>Videos</h3><p>Share clips up to 80MB. Admin can also broadcast a video to everyone.</p></article>
+    </section>
+  </div>
+
+  <div class="modal-bg" id="modal">
+    <div class="modal">
+      <h2 id="modalTitle">Join as user</h2>
+      <p id="modalHelp">Pick a display name to message the admin.</p>
+      <div class="field" id="nameField">
+        <label>Display name</label>
+        <input id="username" maxlength="24" placeholder="e.g. Maya" />
+      </div>
+      <div class="field" id="passField" style="display:none">
+        <label>Admin password</label>
+        <input id="password" type="password" placeholder="Default: admin123" />
+      </div>
+      <div class="err" id="err"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn primary" id="goBtn">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mode = "user";
+    function openModal(m) {
+      mode = m;
+      document.getElementById("modal").classList.add("open");
+      document.getElementById("err").textContent = "";
+      const isAdmin = m === "admin";
+      document.getElementById("modalTitle").textContent = isAdmin ? "Admin desk" : "Join as user";
+      document.getElementById("modalHelp").textContent = isAdmin
+        ? "Enter the admin password to send broadcasts and reply to users."
+        : "Pick a display name to message the admin.";
+      document.getElementById("nameField").style.display = isAdmin ? "none" : "grid";
+      document.getElementById("passField").style.display = isAdmin ? "grid" : "none";
+    }
+    function closeModal() { document.getElementById("modal").classList.remove("open"); }
+
+    document.getElementById("goBtn").onclick = async () => {
+      const err = document.getElementById("err");
+      err.textContent = "";
+      try {
+        if (mode === "admin") {
+          const password = document.getElementById("password").value;
+          const res = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Login failed");
+          sessionStorage.setItem("pulselink_admin", "1");
+          location.href = "/admin.html";
+        } else {
+          const username = document.getElementById("username").value.trim();
+          const res = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Could not join");
+          sessionStorage.setItem("pulselink_user", JSON.stringify(data.user));
+          location.href = "/user.html";
+        }
+      } catch (e) {
+        err.textContent = e.message;
+      }
+    };
+  </script>
+</body>
+</html>

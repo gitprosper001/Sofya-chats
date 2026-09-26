@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseLink — Admin desk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-nav">
+      <div class="brand"><div class="logo">P</div> Admin desk</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="btn ghost" href="/">Leave</a>
+      </div>
+    </header>
+    <div class="app-body">
+      <aside class="sidebar">
+        <div class="tabs">
+          <div class="tab on" data-tab="inbox" onclick="switchTab('inbox')">Inbox</div>
+          <div class="tab" data-tab="broadcast" onclick="switchTab('broadcast')">Broadcast</div>
+        </div>
+        <div id="userList"></div>
+      </aside>
+      <section class="chat" id="inboxView">
+        <div class="chat-head">
+          <strong id="threadTitle">Select a user</strong>
+          <div class="meta">Reply with text, image or video</div>
+        </div>
+        <div class="feed" id="feed"></div>
+        <div class="preview-row" id="preview"></div>
+        <form class="composer" id="form">
+          <label class="btn file-btn">Attach<input type="file" id="file" accept="image/*,video/*"></label>
+          <textarea id="text" placeholder="Reply to this user…"></textarea>
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </section>
+      <section class="chat" id="broadcastView" style="display:none">
+        <div class="chat-head">
+          <strong>Broadcast to everyone</strong>
+          <div class="meta">This lands in every user’s feed</div>
+        </div>
+        <div class="feed" id="bcastFeed"></div>
+        <div class="preview-row" id="bcastPreview"></div>
+        <form class="composer" id="bcastForm">
+          <label class="btn file-btn">Attach<input type="file" id="bcastFile" accept="image/*,video/*"></label>
+          <textarea id="bcastText" placeholder="Announcement…"></textarea>
+          <button class="btn primary" type="submit">Broadcast</button>
+        </form>
+      </section>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+  <script>
+    bootAdmin();
+  </script>
+</body>
+</html>
