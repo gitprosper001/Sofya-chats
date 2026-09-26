@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
 const DATA_DIR = path.join(__dirname, "data");
-const UPLOADS_DIR = path.join(__dirname, "public", "uploads");
+const UPLOADS_DIR = path.join(__dirname, "uploads");
 const MESSAGES_FILE = path.join(DATA_DIR, "messages.json");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const BROADCASTS_FILE = path.join(DATA_DIR, "broadcasts.json");
@@ -58,8 +58,7 @@ const upload = multer({
 });
 
 app.use(express.json({ limit: "2mb" }));
-app.use(express.static(path.join(__dirname, "public")));
-
+app.use(express.static(__dirname));
 app.post("/api/register", (req, res) => {
   const { username } = req.body;
   if (!username || typeof username !== "string") {
@@ -115,7 +114,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 });
 
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 const online = new Map();
